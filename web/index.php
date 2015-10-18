@@ -1,6 +1,7 @@
 <?php
 
 require('../vendor/autoload.php');
+require('../include/DataSource.php');
 
 $app = new Silex\Application();
 $app['debug'] = true;
@@ -19,29 +20,14 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 $app->get('api1/hotels', function() use($app) {
   $app['monolog']->addDebug('getting hotels');
 
-  $apiServer = getenv('api_server');
+  $apiServer=getenv('api_server');
   $apiKey = getenv('api_key');
   $apiRegion = getenv('api_region');
-  $apiParams = ['query' => [
-    'key' => $apiKey,
-    'rg' => $apiRegion,
-  ]];
-  $app['monolog']->addDebug("params" . $apiServer);
+  $apiCats = getenv('api_cats');
 
-  //http://atlas.atdw.com.au/productsearchservice.svc/products?key=_KEY_&rg=_REGIONID_
-  $apiClient = new GuzzleHttp\Client();
-  $apiResponse = $apiClient->request(
-    'GET',
-    $apiServer,
-    $apiParams
-  );
-  $apiBody = $apiResponse->getBody(true);
-  $xml = simplexml_load_string($apiBody);
-  #$json = json_decode($apiBody);
-  $app['monolog']->addDebug($xml);
-
-  $hotels = array('hello' => 'world', 'times' => getenv('TIMES'));
-  return json_encode($xml);
+  $ds = new dnswtest\DataSource($apiServer, $apiKey, $apiRegion, $apiCats);
+  $products = $ds->getProducts();
+  return $products;
 });
 
 
