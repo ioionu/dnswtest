@@ -10,15 +10,17 @@ class DataSource
   public $apiRegion;
   public $apiCat;
   public $pageSize=10;
+  public $page=1;
   public $rawData;
   public $data;
   public $sourceEncoding = 'UTF-16LE';
 
-  public function __construct($apiServer, $apiKey, $apiRegion, $apiCats) {
+  public function __construct($apiServer, $apiKey, $apiRegion, $apiCats, $page=1) {
     $this->apiServer = $apiServer;
     $this->apiKey = $apiKey;
     $this->apiRegion = $apiRegion;
     $this->apiCats = $apiCats;
+    $this->page = $page;
     $this->load();
   }
 
@@ -35,16 +37,24 @@ class DataSource
       'key' => $this->apiKey,
       'rg' => $this->apiRegion,
       'size' => $this->pageSize,
+      'pge' => $this->page,
       'cats' => $this->apiCats,
       'out' => 'json'
     ]];
 
-    $apiClient = new \GuzzleHttp\Client();
-    $apiResponse = $apiClient->request(
-      'GET',
-      $this->apiServer,
-      $apiParams
-    );
+    $apiClient = new \GuzzleHttp\Client(['timeout'  => 4.0]);
+    try {
+      $apiResponse = $apiClient->request(
+        'GET',
+        $this->apiServer,
+        $apiParams
+      );
+    } catch (Exception $e) {
+      echo $e->getRequest();
+      if ($e->hasResponse()) {
+        echo $e->getResponse();
+      }
+    }
     $apiBody = $apiResponse->getBody(true);
     $this->rawData = $apiBody;
     $this->parse();

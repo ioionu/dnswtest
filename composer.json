@@ -4,6 +4,7 @@
     "monolog/monolog": "~1.7",
     "twig/twig": "^1.19",
     "symfony/twig-bridge": "^2.7",
+    "symfony/symfony": "^2.7",
     "guzzlehttp/guzzle": "^6.1"
   },
   "require-dev": {

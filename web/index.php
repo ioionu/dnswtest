@@ -3,6 +3,8 @@
 require('../vendor/autoload.php');
 require('../include/DataSource.php');
 
+use Symfony\Component\HttpFoundation\Request;
+
 $app = new Silex\Application();
 $app['debug'] = true;
 
@@ -17,7 +19,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 
 // Our web handlers
-$app->get('api1/hotels', function() use($app) {
+$app->get('api1/hotels', function(Request $request) use($app) {
   $app['monolog']->addDebug('getting hotels');
 
   $apiServer=getenv('api_server');
@@ -25,7 +27,14 @@ $app->get('api1/hotels', function() use($app) {
   $apiRegion = getenv('api_region');
   $apiCats = getenv('api_cats');
 
-  $ds = new dnswtest\DataSource($apiServer, $apiKey, $apiRegion, $apiCats);
+  $page = $request->get('page');
+  if(!isset($page)) {
+    $page = 1;
+  }
+  $app['monolog']->addDebug("page:" . $page);
+
+
+  $ds = new dnswtest\DataSource($apiServer, $apiKey, $apiRegion, $apiCats, $page);
   $products = $ds->getProducts();
   return $products;
 });
