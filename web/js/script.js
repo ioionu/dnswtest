@@ -5,7 +5,8 @@ dnswtest.Accommodation = function(params){
     apiURL: '/api1/hotels',
     listTarget: '#accommodation',
     productTarget: '#product',
-    nextTarget: '#footer',
+    footerTarget: '#footer',
+    countTarget: '#count',
     pageLength: 10,
   };
 
@@ -46,9 +47,7 @@ dnswtest.Accommodation.prototype.load = function(){
     if(typeof _this.data.products == 'undefined') {
       _this.data = data;
     } else {
-      console.log("joining", _this.data.products.length, data.products.length);
       _this.data.products = _this.data.products.concat(data.products);
-      console.log("joined", _this.data.products, _this.data.products.length);
     }
   })
   .done(_this.render.bind(_this));
@@ -66,7 +65,8 @@ dnswtest.Accommodation.prototype.addNextButton = function(){
   $button.click(function(){
     _this.next();
   });
-  jQuery(this.options.nextTarget).append($button);
+  jQuery(this.options.footerTarget).append($button);
+
 };
 
 dnswtest.Accommodation.prototype.getProductDataByPage = function(page){
@@ -83,7 +83,6 @@ dnswtest.Accommodation.prototype.render = function(data){
 
   //create list items and append to document
   for(var i = 0; i < products.length; i++) {
-    console.log("creating item:", products[i].productName);
     item = this.templates.listItem.template(products[i]);
     item = jQuery(item);
     product = products[i];
@@ -94,12 +93,25 @@ dnswtest.Accommodation.prototype.render = function(data){
     element = jQuery(this.options.listTarget).append(item);
   }
 
+  //add total products found
+  var $count = jQuery("<span>Count:" + this.data.products.length + " of " + this.data.numberOfResults + "</span>");
+  jQuery(this.options.countTarget).html($count);
+
 };
 
 dnswtest.Accommodation.prototype.displayProduct = function(product){
-  console.log("display product", product);
+  var _this = this;
   var productDisplay = this.templates.product.template(product);
+  productDisplay = jQuery(productDisplay);
+  productDisplay.click(function(){
+    jQuery(_this.options.productTarget).hide();
+    jQuery(_this.options.footerTarget).show();
+    jQuery(_this.options.listTarget).show();
+  });
   var element = jQuery(this.options.productTarget).html(productDisplay);
+  jQuery(this.options.listTarget).hide();
+  jQuery(this.options.footerTarget).hide();
+  jQuery(this.options.productTarget).show();
 };
 
 var accom = new dnswtest.Accommodation();
