@@ -57,7 +57,7 @@ class DataSource
   }
 
   public function getProducts() {
-    $json = json_encode($this->data->products);
+    $json = json_encode($this->data);
     return $json;
   }
 }
