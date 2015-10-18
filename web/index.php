@@ -53,9 +53,10 @@ $app->get('/', function() use($app) {
   return $app['twig']->render('index.twig', array('yo' => "yo!"));
 });
 
+/*
 $filename = __DIR__.preg_replace('#(\?.*)$#', '', $_SERVER['REQUEST_URI']);
 if (php_sapi_name() === 'cli-server' && is_file($filename)) {
   return false;
 }
-
+*/
 $app->run();
