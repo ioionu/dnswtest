@@ -15,7 +15,8 @@ source ../.env && php -S localhost:8888 index.php
 * Should have used a front end framework
 * Load more button shows before list has rendered
 * Use more of data from the API, currently just using productName and productDescription
-* Test
+* Tests
+* Spellcheck
 
 ## Live site
 
