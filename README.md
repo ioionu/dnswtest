@@ -15,6 +15,8 @@ source ../.env && php -S localhost:8888 index.php
 * Should have used a front end framework
 * Load more button shows before list has rendered
 * Use more of data from the API, currently just using productName and productDescription
+* Workout why getting weird timeouts in dev
+* Trim composer.json... don't think I need all of that
 * Tests
 * Spellcheck
 
